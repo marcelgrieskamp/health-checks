@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Source .env file
-cd "$(dirname "$0")" &&
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" &&
     source .env
 
 # FUNCTIONS
