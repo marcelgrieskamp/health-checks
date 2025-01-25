@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# Source .env file
-cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" &&
-    source .env
+# VARIABLES
+CONFIG_LOCATION="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "${CONFIG_LOCATION}/.env"
 
 # FUNCTIONS
 send_email() {
