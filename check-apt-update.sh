@@ -2,20 +2,22 @@
 
 # VARIABLES
 CONFIG_LOCATION="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+HOSTNAME="$(hostname -f)"
 
 source "${CONFIG_LOCATION}/.env"
 
+
 # FUNCTIONS
-send_email() {
-        local message="Updates available \n\n ${1}"
-        echo -e "Subject: HEALTH: Updates available - $(hostname -f)\n\n ${message}" | /usr/sbin/sendmail "$EMAIL_ADDRESS"
+send_notification() {
+        local MESSAGE="$1"
+        curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${MESSAGE}\", \"username\":\"Backup\"}" "${WEBHOOK_URL}"
 }
 
 # Get the list of upgradable packages and count the lines, suppressing warnings
 updates=$(/usr/bin/sudo /usr/bin/apt-get update >/dev/null && /usr/bin/sudo /usr/bin/apt list --upgradable 2>/dev/null | /usr/bin/grep -c "/")
 
+
 # Check if there are updates available
 if [[ ${updates} -ne 0 ]]; then
-        # Send mail to the mail adress from .env-file if updates are available
-        send_email "${updates} updates available"
+        send_notification "### HEALTH SERVICE \nStatus: :fire: \nHost: $HOSTNAME \nMessage: ${updates} updates available"
 fi
